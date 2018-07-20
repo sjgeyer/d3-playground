@@ -1,36 +1,53 @@
 'use strict';
 
-const data = [4, 8, 15, 16, 23, 42];
+const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+let data = Array(26).fill(0).map((x, i) => {
+  return {
+    name: alphabet[i],
+    value: Math.round(Math.random() * 100),
+  }
+});
 
-const width = 420;
-const height = 20;
-
-// MAKING A CHART - short way
-// d3.select('.chart')
-//   .selectAll('div')
-//     .data(data)
-//   .enter().append('div')
-//     .style('width', d => `${d*10}px`)
-//     .style('background-color', 'blue')
-//     .text(d => d);
+const margin = {top: 20, right: 30, bottom:30, left: 40};
+const width = 960 - margin.left - margin.right;
+const height = 500 - margin.top - margin.bottom;
 
 // MAKING A CHART - long way
-const x = d3.scaleLinear()
-  .domain([0, d3.max(data)])
-  .range([0, width]);
-const chart = d3.select('.chart'); // select chart container
-const bar = chart.selectAll('div'); // initiate data join by defining selection to give data
-const barUpdate = bar.data(data); // joining the data
-// selection is empty, returned update and exit selections are empty, only need to handle enter
-// selection --> new data for which there was no existing element
-const barEnter = barUpdate.enter().append('div');
-barEnter.style('width', d => `${x(d)}px`); // set the width of each bar using associated data
-// value
-barEnter.text(d => d) // give it text from data array
-  .style('color', 'white');
-barEnter.style('background-color', 'steelblue')
-  .style('margin', '10px')
-  .style('box-sizing', 'border-box')
-  .style('padding', '10px');
 
-// d3.select('body').transition().duration(1000).style('background-color', 'black');
+const y = d3.scaleLinear()
+  .range([height, 0])
+  .domain([0, d3.max(data, d => d.value)]);
+
+const x = d3.scaleBand()
+  .domain(data.map(d => d.name))
+  .rangeRound([0, width]); // fits width of bars to chart size
+
+const chart = d3.select('.chart')
+  .attr('width', width + margin.left + margin.right)
+  .attr('height', height + margin.top + margin.bottom)
+  .append('g')
+  .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+const bar = chart.selectAll('g')
+  .data(data)
+  .enter().append('g')
+  .attr('transform', d => `translate (${x(d.name)}, 0)`);
+
+chart.append('g')
+  .call(d3.axisLeft(y));
+
+chart.append('g')
+  .call(d3.axisBottom(x))
+  .attr('transform', `translate(0, ${height})`);
+
+bar.append('rect')
+  .attr('y', d => y(d.value))
+  .attr('height', d => height - y(d.value))
+  .attr('width', x.bandwidth() - 1);
+
+// adds text to bars if desired
+// bar.append('text')
+//   .attr('x', x.bandwidth() / 2)
+//   .attr('y', d => y(d.value) + 3)
+//   .attr('dy', '0.75em')
+//   .text(d => d.value);
