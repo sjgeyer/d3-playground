@@ -1,0 +1,16 @@
+.chart rect {
+  fill: steelblue;
+}
+
+.axis text {
+  fill: black;
+  font: 10px sans-serif;
+}
+
+.x text {
+  text-anchor: end;
+}
+
+.y text {
+  text-anchor: middle;
+}
