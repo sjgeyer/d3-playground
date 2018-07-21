@@ -1,6 +1,6 @@
 'use strict';
 
-const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 let data = Array(26).fill(0).map((x, i) => {
   return {
     name: alphabet[i],
@@ -16,7 +16,7 @@ const height = 500 - margin.top - margin.bottom;
 
 const y = d3.scaleLinear()
   .range([height, 0])
-  .domain([0, d3.max(data, d => d.value)]);
+  .domain([0, 100]);
 
 const x = d3.scaleBand()
   .domain(data.map(d => d.name))
@@ -34,10 +34,18 @@ const bar = chart.selectAll('g')
   .attr('transform', d => `translate (${x(d.name)}, 0)`);
 
 chart.append('g')
-  .call(d3.axisLeft(y));
+    .attr('class', 'y axis')
+    .call(d3.axisLeft(y));
+  // .append('text')
+  //   .attr('transform', 'rotate(-90)')
+  //   .attr('y', -6)
+  //   .attr('dy', '0.71em')
+  //   .style('text-anchor', 'end')
+  //   .text('Frequency');
 
 chart.append('g')
   .call(d3.axisBottom(x))
+  .attr('class', 'x axis')
   .attr('transform', `translate(0, ${height})`);
 
 bar.append('rect')
@@ -45,7 +53,7 @@ bar.append('rect')
   .attr('height', d => height - y(d.value))
   .attr('width', x.bandwidth() - 1);
 
-// adds text to bars if desired
+// ------ adds text to bars if desired -------
 // bar.append('text')
 //   .attr('x', x.bandwidth() / 2)
 //   .attr('y', d => y(d.value) + 3)
