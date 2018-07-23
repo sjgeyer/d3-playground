@@ -7,10 +7,18 @@
   font: 10px sans-serif;
 }
 
-.x text {
+.y text {
   text-anchor: end;
 }
 
-.y text {
+.x text {
   text-anchor: middle;
+}
+
+.x path {
+  display: none;
+}
+
+.bar:hover {
+  fill: brown;
 }
