@@ -49,6 +49,7 @@ chart.append('g')
   .attr('transform', `translate(0, ${height})`);
 
 bar.append('rect')
+  .attr('class', 'bar')
   .attr('y', d => y(d.value))
   .attr('height', d => height - y(d.value))
   .attr('width', x.bandwidth() - 1);
